@@ -22,7 +22,7 @@ var con = mysql.createConnection({
 //** Check Connection **//
   con.connect(function(err) {
     if (err) throw err;
-    console.log("Connected!");
+    console.log("Database connected  for Order Table Now...!");
   });
 
  // Insert Code Query-------------------------------?? 
