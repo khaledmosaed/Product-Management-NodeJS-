@@ -10,26 +10,28 @@ var mysql = require('mysql');  // Module for connection
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
- 
 
-
-// connection code
+//* connection code 
 var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database:"purchases"
+  host: "localhost",     //192.168.1.4
+  user: "root",          // Server userName
+  password: "",          // Server  Password
+  database:"purchases"   // DataBase Name
 });
 
+ //** Check Connection **//
 con.connect(function(err) {
   if (err) throw err;
-  console.log("Database connected!");
+  console.log("Database connected  for PRODUCT Table Now...!");
 });
-// insert code
-var insertProduct = function(name , price, img , sku , description , notes, res){
 
-    var sql = ("INSERT INTO products ( name , price, img , sku , description , notes) "+
-    "VALUES ('"+name+"',"+ price+",'"+ img+"','"+ sku+"', '"+ description+"', '"+ notes+"') ");
+// Insert Code Query-------------------------------??
+
+var insertProduct = function(name , price, img , sku , description , notes, res){
+    
+    var sql = ("INSERT INTO products ( name , price, img , sku , description , notes) "
+               +"VALUES ('"+name+"',"+ price+",'"+ img+"','"+ sku+"', '"+ description+"', '"+ notes+"') ");
+
     con.query(sql, function (err, result) {
       if (err) throw err;
       console.log("1 record inserted");
@@ -38,7 +40,7 @@ var insertProduct = function(name , price, img , sku , description , notes, res)
     });
 };
 
-app.post('/', function (req, res) {
+app.post('/insrtProd', function (req, res) {
     // get data form http request
     var newProduct  = req.body ; 
     //log data
@@ -51,12 +53,11 @@ app.post('/', function (req, res) {
         sku =newProduct.sku ,
         description =newProduct.description ,
         notes=newProduct.notes  ;
-
     // insert record 
     insertProduct(name , price, img , sku , description , notes,res)
 });
 
-// delete function--------------------------------
+// Delete Code Query-------------------------------??
 
 var deleteProduct = function (id , res){
     var sql = "DELETE FROM products WHERE id = '"+id+"' ";
@@ -68,18 +69,19 @@ var deleteProduct = function (id , res){
     });
 
 };
-app.delete('/', function (req, res) {
+app.delete('/deltProd', function (req, res) {
         //log data
         console.log(req.body);
         var id =req.body.id ;
-        // insert record 
+        // delete record 
         deleteProduct(id,res);
     });
- 
 
-// update function -------------------------------- 
+//Update Code Query --------------------------------- 
+
 var updateProduct = function (id ,name , price, img , sku , description , notes,res) {
-    var sql = "UPDATE products SET name = '"+name+"' , price ='"+price+"', img = '"+img+"' , sku = '"+sku+"', description = '"+description+"' , notes ='"+notes+"'  WHERE id = '"+id+"'";
+    var sql = "UPDATE products SET name = '"+name+"' , price ='"+price+"', img = '"+img+"' "
+    +", sku = '"+sku+"', description = '"+description+"' , notes ='"+notes+"'  WHERE id = '"+id+"'";
     
         con.query(sql, function (err, result) {
           if (err) throw err;
@@ -88,7 +90,7 @@ var updateProduct = function (id ,name , price, img , sku , description , notes,
         });
       };
 
-      app.put('/', function (req, res) {
+      app.put('/updtProd', function (req, res) {
         //log data
 
         var vare=req.body;
@@ -106,49 +108,47 @@ var updateProduct = function (id ,name , price, img , sku , description , notes,
     });
 
 
-    // search code query--------------------------------
+// Search Code Query-------------------------------
 
-     var serchProduct = function (id ,name , img , sku , description , notes,res) {
+   var serchProduct = function (id ,name , img , sku ,price , description , notes,res) {
 
-           var sql = " SELECT * FROM products WHERE "
-           +" id LIKE '%"+id+"%' "
-           +" AND name LIKE '%"+name+"%' "
-           +" AND  img LIKE '%"+img+"%' " 
-           +" AND sku LIKE  '%"+sku+"%' "
-           +" AND description LIKE '%"+description+"%' "
-           +" AND notes LIKE '%"+notes+"%'";
-             console.log (sql);
-             // el concole log
-           con.query(sql, function (err, result) {
-            if (err) throw err;
-            console.log("searched Value " + result);
-            res.send(result);
-          });
-        
-          
+           var  sql= "SELECT * FROM products WHERE id LIKE '%"+id+"%' "
+                    +" AND name LIKE '%"+name+"%' "
+                    +" AND price LIKE '%"+price+"%' "
+                    +" AND img LIKE '%"+img+"%' "
+                    +" AND sku LIKE '%"+sku+"%' "
+                    +" AND notes LIKE '%"+notes+"%' "
+                    +" AND description like '%"+description+"%' " ;
+  
+
+        console.log (sql);
+         // el concole log
+        con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("searched Value " + result);
+        res.send(result);
+        });  
      };
 
-     app.post('/search', function (req, res) {
+     app.get('/serchProd', function (req, res) {
         //log data
-
-        var seavlue=req.body;
+        var seavlue=req.query;
         console.log(seavlue);
 
         var   id  =seavlue.id,
               name =seavlue.name , 
+              price =seavlue.price,
               img=seavlue.img  ,
               sku =seavlue.sku ,
               description =seavlue.description ,
               notes=seavlue.notes  ;
-        // search record
+    
+        if (!id) { id = "" ;}
         
-        if (!id) {
-            id = "";
-
-        }
-        serchProduct(id , name , img , sku , description , notes,res);
+        serchProduct(id ,name , img , sku ,price , description , notes,res);
      });
 
+ // Console output..
 app.listen(3033, function () {
     console.log('Example app listening on port 3033!')
 });
