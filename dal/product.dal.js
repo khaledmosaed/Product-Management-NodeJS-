@@ -1,6 +1,8 @@
 var con = require('./mysql.connection');  // Module for connection
 
  var getByid = function(id) {
+
+
     
       //  create promise object 
       var promise =  new Promise(function (resolve, reject) {
@@ -15,10 +17,9 @@ var con = require('./mysql.connection');  // Module for connection
             reject(err)
           }
     
-          console.log("" , result);
-    
+
           // resolve the promise
-          console.log('promis will finish next line with resolve'); 
+
           var data = null ; 
           if (result.length > 0)        
             {
@@ -28,12 +29,12 @@ var con = require('./mysql.connection');  // Module for connection
           if(data){
              resolve(data);
           }else{
-            reject({err:"user not found"});
+            reject({err:"product not found"});
           }
         });
       });
     
-      console.log('return promise object');
+
       return promise ; 
 };
   

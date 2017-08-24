@@ -36,7 +36,7 @@ var getById = function (userId) {
           console.log("" , result);
     
           // resolve the promise
-          console.log('promis will finish next line with resolve'); 
+
           var data = null ; 
           if(result.length > 0)        
             {
@@ -51,7 +51,7 @@ var getById = function (userId) {
         });
       });
     
-      console.log('return promise object');
+
       return promise ; 
 };
 

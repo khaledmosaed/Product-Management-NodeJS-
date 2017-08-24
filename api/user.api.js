@@ -4,7 +4,7 @@
 */
 var express = require('express');
 var router = express.Router();
-var userDal = require('./dal/user.dal')
+var userDal = require('../dal/user.dal')
 /*
  * GET userlist.
  */

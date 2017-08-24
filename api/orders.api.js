@@ -3,7 +3,7 @@
 */
 var express = require('express');
 var router = express.Router();
-var orderDal = require('./dal/order.dal');
+var orderDal = require('../dal/order.dal');
 
 
 router.post('/insrtOrd', function (req, res) {
@@ -64,9 +64,9 @@ router.get('/serchOrder', function (req, res) {
 
 router.get('/ordersbyid', function (req, res) {
   
-    var orderId = req.query.orderId ; 
-  
-    getById(orderId).then(function(data){
+    var orderId = req.query.orderId ;
+
+    orderDal.getbyId(orderId).then(function(data){
       console.log('userbyid data',data);
       res.send(data) ; 
     })
@@ -78,4 +78,4 @@ router.get('/ordersbyid', function (req, res) {
 });
 
 
-  module.exports = router;
+module.exports = router;

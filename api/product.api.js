@@ -3,7 +3,7 @@
  */
 var express = require('express');
 var router = express.Router();
-var productDal = require('./dal/product.dal')
+var productDal = require('../dal/product.dal')
 /*
  * GET userlist.
  */

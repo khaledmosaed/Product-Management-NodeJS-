@@ -1,5 +1,5 @@
 const express = require('express')
-const app = express()
+const app = express();
 var bodyParser = require('body-parser');
 var multer = require('multer'); // v1.0.5
 var upload = multer();   // for parsing multipart/form-data
@@ -9,10 +9,10 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 
 
 // my modules
-var userRouter = require('./user');
-var productRouter = require('./product');
-var orderRouter = require('./orders');
-var orderProductRouter = require('./order-product');
+var userRouter = require('./api/user.api');
+var productRouter = require('./api/product.api');
+var orderRouter = require('./api/orders.api');
+var orderProductRouter = require('./api/order-product.api');
 
 
 app.use('/', userRouter);
