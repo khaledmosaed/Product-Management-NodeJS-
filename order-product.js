@@ -3,7 +3,7 @@
  */
 var express = require('express');
 var router = express.Router();
-var con = require('./mysql.connection');  // Module for connection
+var con = require('./dal/mysql.connection');  // Module for connection
 
 
 // Add New Record Query-------------------------------?? 

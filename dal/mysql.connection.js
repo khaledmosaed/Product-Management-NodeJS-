@@ -1,8 +1,5 @@
 /*   This file contains connection code 
-*    
-*
 **/
-
 var mysql = require('mysql');  // Module for connection
 
 var con = mysql.createConnection({
