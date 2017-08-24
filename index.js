@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 var userRouter = require('./user');
 var productRouter = require('./product');
 var orderRouter = require('./orders');
-var orderProductRouter = require('./orderproduct');
+var orderProductRouter = require('./order-product');
 
 
 app.use('/', userRouter);
