@@ -1,31 +1,50 @@
 /**
 * Created by k_mosaed on 8/21/2017
 */
-const express = require('express')
-const app = express()
-var bodyParser = require('body-parser');
-var multer = require('multer'); // v1.0.5
-var upload = multer(); // for parsing multipart/form-data
-var mysql = require('mysql');  // Module for connection
+var express = require('express');
+var router = express.Router();
+var con = require('./mysql.connection');  // Module for connection
 
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-// connection code
-var con = mysql.createConnection({
-  host: "localhost",     //192.168.1.4
-  user: "root",          // Server userName
-  password: "",          // Server  Password
-  database: "purchases"   // DataBase Name
-});
+function getById(orderId) {
+  
+    //  create promise object 
+    var promise =  new Promise(function (resolve, reject) {
+      
+  
+      //  make query in database
+      var sql = "SELECT * FROM `orders` WHERE  orderId = '" + orderId + "' ";
+      con.query(sql, function (err, result) {
+        
+        if (err) {
+          console.log('promis will finish next line with reject');    
+          reject(err)
+        }
+  
+        console.log("" , result);
+  
+        // resolve the promise
+        console.log('promis will finish next line with resolve'); 
+        var data = null ; 
+        if (result.length > 0)        
+          {
+            data = result[0];
+          }
+  
+        if(data){
+           resolve(data);
+        }else{
+          reject({err:"user not found"});
+        }
+      });
+    });
+  
+    console.log('return promise object');
+    return promise ; 
+};
 
-//** Check Connection **//
-con.connect(function (err) {
-  if (err) throw err;
-  console.log("Database connected  for Order Table Now...!");
-});
 
-// Insert Code Query-------------------------------?? 
+// Insert Code Query------------------------------- ---
 
 var insertOrder = function (userId, totalPrice, status, res) {
 
@@ -41,19 +60,7 @@ var insertOrder = function (userId, totalPrice, status, res) {
   });
 };
 
-app.post('/insrtOrd', function (req, res) {
-
-  var newOrder = req.body;
-  console.log(newOrder);
-
-  var userId = newOrder.userId,
-    totalPrice = newOrder.totalPrice,
-    status = newOrder.status;
-
-  insertOrder(userId, totalPrice, status, res);
-});
-
-// Delete Code Query-------------------------------??
+// Delete Code Query----------------------------------
 
 var deleteOrder = function (orderId, res) {
   var sql = " DELETE FROM `orders` WHERE orderId ='" + orderId + "' ";
@@ -65,7 +72,54 @@ var deleteOrder = function (orderId, res) {
   });
 };
 
-app.delete('/deltOrder', function (req, res) {
+// Update Code Query --------------------------------- 
+
+var updateOrder = function (orderId, userId, totalPrice, status, res) {
+  
+    var sql = "UPDATE `orders` SET userId='" + userId + "' , totalPrice = '" + totalPrice + "' ,status ='" + status + "' "
+      + " WHERE orderId = '" + orderId + "'";
+    console.log(sql);
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log(result + " records updated");
+      res.send(result);
+    });
+};
+  
+// Search Code Query-------------------------------
+  
+var searchOrder = function (orderId, userId, totalPrice, status, res) {
+    
+      var sql = " SELECT * FROM `orders` WHERE "
+        + " orderId LIKE '%" + orderId + "%' "
+        + " AND userId LIKE '%" + userId + "%' "
+        + " AND  totalPrice LIKE '%" + totalPrice + "%' "
+        + " AND status LIKE '%" + status + "%' ";
+      console.log(sql);
+      // el concole log
+      con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("searched Value " + result);
+        res.send(result);
+      });
+};
+
+
+router.post('/insrtOrd', function (req, res) {
+  // get data form http request
+  var newOrder  = req.body ; 
+  //log data
+  console.log(newOrder);
+
+  // assgin data to local variables
+  var userId =newOrder.userId , 
+      totalPrice=newOrder.totalPrice,
+      status=newOrder.status  ;
+  // insert record 
+  insertOrder(userId, totalPrice, status, res)
+});
+
+router.delete('/deltOrder', function (req, res) {
   //log data   
   console.log(req.body);
   var orderId = req.body.orderId;
@@ -74,21 +128,8 @@ app.delete('/deltOrder', function (req, res) {
   deleteOrder(orderId, res);
 });
 
-//Update Code Query --------------------------------- 
 
-var updateOrder = function (orderId, userId, totalPrice, status, res) {
-
-  var sql = "UPDATE `orders` SET userId='" + userId + "' , totalPrice = '" + totalPrice + "' ,status ='" + status + "' "
-    + " WHERE orderId = '" + orderId + "'";
-  console.log(sql);
-  con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log(result + " records updated");
-    res.send(result);
-  });
-};
-
-app.put('/updtOrder', function (req, res) {
+router.put('/updtOrder', function (req, res) {
   //log data
 
   var vare = req.body;
@@ -104,25 +145,8 @@ app.put('/updtOrder', function (req, res) {
   updateOrder(orderId, userId, totalPrice, status, res);
 });
 
-// Search Code Query-------------------------------
 
-var searchOrder = function (orderId, userId, totalPrice, status, res) {
-
-  var sql = " SELECT * FROM `orders` WHERE "
-    + " orderId LIKE '%" + orderId + "%' "
-    + " AND userId LIKE '%" + userId + "%' "
-    + " AND  totalPrice LIKE '%" + totalPrice + "%' "
-    + " AND status LIKE '%" + status + "%' ";
-  console.log(sql);
-  // el concole log
-  con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log("searched Value " + result);
-    res.send(result);
-  });
-};
-
-app.get('/serchOrder', function (req, res) {
+router.get('/serchOrder', function (req, res) {
   //log data
   var seavlue = req.query;
   console.log('serchOrder',seavlue);
@@ -137,7 +161,20 @@ app.get('/serchOrder', function (req, res) {
   searchOrder(orderId, userId, totalPrice, status, res);
 });
 
-// Console output..
-app.listen(3033, function () {
-  console.log("Example Listen to your port:3033");
+router.get('/ordersbyid', function (req, res) {
+  
+    var orderId = req.query.orderId ; 
+  
+    getById(orderId).then(function(data){
+      console.log('userbyid data',data);
+      res.send(data) ; 
+    })
+    .catch(function(error){
+      console.log('userbyid errr',error);
+      res.status(500).send(error) ; 
+    })
+   
 });
+
+
+  module.exports = router;
