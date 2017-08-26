@@ -1,27 +1,25 @@
-
 /**
 * Created by k_mosaed on 8/23/2017
 */
 var express = require('express');
 var router = express.Router();
 var userDal = require('../dal/user.dal')
+
 /*
  * GET userlist.
  */
-
-
 router.post('/instUser', function (req, res) {
     
       var newUser = req.body;
       console.log(newUser);
-    
+
       var name = newUser.name,
           password = newUser.password,
           email = newUser.email,
           imag = newUser.imag,
           mobile = newUser.mobile;
     
-          userDal.insertUser(name, password, email, imag, mobile, res);
+    userDal.insertUser(name, password, email, imag, mobile, res);
 });
     
 router.delete('/deltUser', function (req, res) {
@@ -29,11 +27,11 @@ router.delete('/deltUser', function (req, res) {
     console.log(req.body);
     var delUser = req.body;
     var userId = delUser.userId;
-    name = delUser.name,
-    password = delUser.password,
-    email = delUser.email,
-    imag = delUser.imag,
-    mobile = delUser.mobile;
+        name = delUser.name,
+        password = delUser.password,
+        email = delUser.email,
+        imag = delUser.imag,
+        mobile = delUser.mobile;
 
     // delete record 
     userDal.deletUser(userId, name, password, email, imag, mobile, res);

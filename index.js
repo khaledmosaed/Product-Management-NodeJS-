@@ -7,6 +7,14 @@ var upload = multer();   // for parsing multipart/form-data
 app.use(bodyParser.json()); // for parsing roulication/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
+// enable origin
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+
 
 // my modules
 var userRouter = require('./api/user.api');

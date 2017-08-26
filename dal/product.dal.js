@@ -4,8 +4,10 @@ var con = require('./mysql.connection');  // Module for connection
 
 
     
-      //  create promise object 
-      var promise =  new Promise(function (resolve, reject) {
+  //  create promise object
+ //
+ //
+ var promise =  new Promise(function (resolve, reject) {
         
     
         //  make query in database
@@ -33,10 +35,9 @@ var con = require('./mysql.connection');  // Module for connection
           }
         });
       });
-    
+     return promise ;
+ };
 
-      return promise ; 
-};
   
 
 // Insert Code Query-------------------------------

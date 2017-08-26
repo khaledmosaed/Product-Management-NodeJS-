@@ -3,7 +3,6 @@ var con = require('./mysql.connection');  // Module for connection
 
  var getbyId = function(orderId) {
 
-     console.log('dal ordder get by id ')
     //  create promise object 
     var promise =  new Promise(function (resolve, reject) {
       
@@ -13,7 +12,7 @@ var con = require('./mysql.connection');  // Module for connection
       con.query(sql, function (err, result) {
         
         if (err) {
-          console.log('promis will finish next line with reject');    
+          console.log('promise will finish next line with reject');
           reject(err)
         }
   
